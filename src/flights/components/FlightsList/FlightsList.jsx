@@ -22,7 +22,7 @@ const FlightsList = ({ flightsList }) => {
     return (
         <>
             <section className="flights-list">
-                <div className=" container flights-list-wrapper">
+                <div className="container flights-list-wrapper">
                     {
                         <>
                             <Titles />

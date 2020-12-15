@@ -40,12 +40,12 @@ class SearchFlight extends Component {
 
     handleFlightSearch = event => {
         const { searchText } = this.state;
+        const validSearchType = isValidFormat(searchText);
 
-        let searchType = isValidFormat(searchText);
+        // prevent fetching flights, if search query is invalid
+        if (!validSearchType) event.preventDefault();
 
-        // if search query is invalid, block fetching flights
-        searchType = searchType ? searchType : event.preventDefault();
-        this.checkValidity(searchType, searchText);
+        this.checkValidity(validSearchType, searchText);
     };
 
     render() {
@@ -77,8 +77,9 @@ class SearchFlight extends Component {
                                 }
                             />
                         </div>
-                        <Link to="/flights/:departures">
+                        <Link to="/flights/:search">
                             <button
+                                type="submit"
                                 className="flights__search-form_search-btn no-border"
                                 onClick={event =>
                                     this.handleFlightSearch(event)
