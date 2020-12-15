@@ -7,8 +7,9 @@ import Buttons from '../Buttons/Buttons';
 import FlightsList from '../FlightsList/FlightsList';
 import * as flightsActions from '../../flights.action';
 
+import moment from 'moment';
 import { filteredFlightsListSelector } from '../../flights.selectors';
-import flt from '../../utils/constants';
+import flt, { TODAY_DATE } from '../../utils/constants';
 import NoFlights from '../NoFlights/NoFlights';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 
@@ -18,7 +19,7 @@ class Airlines extends Component {
     };
 
     componentDidMount() {
-        this.props.getFlightsList(flt.DEPARTURES);
+        this.props.getFlightsList(flt.DEPARTURES, TODAY_DATE);
     }
 
     replaceSearchType = searchType =>
@@ -39,19 +40,29 @@ class Airlines extends Component {
     };
 
     searchFlights = (searchType, searchText) => {
-        const { getTodayDepartures, getTodayArrivals } = this.props;
-
         // let user type both uppercase and lowercase letters for city search
         const upperCaseSearch =
             searchText.charAt(0).toUpperCase() + searchText.slice(1);
+        const flightDate =
+            searchType === flt.FLIGHT_DATE
+                ? moment(searchText, 'DD-MM-YYYY').format('DD-MM-YYYY')
+                : null;
 
         const flightStatus = this.checkFlightStatus();
 
         if (flightStatus === flt.DEPARTURES) {
-            getTodayDepartures(searchType, upperCaseSearch);
+            this.props.getTodayDepartures(
+                searchType,
+                upperCaseSearch,
+                flightDate
+            );
         } else {
             const replacedSearchType = this.replaceSearchType(searchType);
-            getTodayArrivals(replacedSearchType, upperCaseSearch);
+            this.props.getTodayArrivals(
+                replacedSearchType,
+                upperCaseSearch,
+                flightDate
+            );
         }
 
         this.setState({ listSelected: flightStatus });
@@ -65,7 +76,7 @@ class Airlines extends Component {
             ? flt.ARRIVALS
             : flt.DEPARTURES;
 
-        this.props.getFlightsList(selectedList);
+        this.props.getFlightsList(selectedList, TODAY_DATE);
         this.setState({ listSelected: selectedList });
     };
 

@@ -11,6 +11,6 @@ const flt = {
     FLIGHT_DATE: 'timeLandFact'
 };
 
-export const TODAY_DATE = moment().format();
+export const TODAY_DATE = moment().format('DD-MM-YYYY');
 
 export default flt;

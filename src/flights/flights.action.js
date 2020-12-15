@@ -38,18 +38,18 @@ const todayArrivalsReceived = foundArrivals => {
     return action;
 };
 
-export const getFlightsList = (selectedList) => {
+export const getFlightsList = (selectedList, flightDate) => {
     const thunkAction = function(dispatch) {
-        flightsGateway.fetchFlightsList()
+        flightsGateway.fetchFlightsList(flightDate)
         .then(flightsList => dispatch(flightsListReceived(flightsList, selectedList)));
     };
 
     return thunkAction;
 };
 
-export const getTodayDepartures = (searchType, searchText) => {
+export const getTodayDepartures = (searchType, searchText, flightDate) => {
     const thunkAction = function(dispatch) {
-        flightsGateway.fetchFlightsList()
+        flightsGateway.fetchFlightsList(flightDate)
         .then(flightsList => {
                 const { departure } = flightsList.body;
                 const foundDepartures = departure.filter(
@@ -64,9 +64,9 @@ export const getTodayDepartures = (searchType, searchText) => {
     return thunkAction;
 };
 
-export const getTodayArrivals = (searchType, searchText) => {
+export const getTodayArrivals = (searchType, searchText, flightDate) => {
     const thunkAction = function(dispatch) {
-        flightsGateway.fetchFlightsList()
+        flightsGateway.fetchFlightsList(flightDate)
         .then(flightsList => {
                 const { arrival } = flightsList.body;
                 const foundArrivals = arrival.filter(
@@ -80,4 +80,3 @@ export const getTodayArrivals = (searchType, searchText) => {
 
     return thunkAction;
 };
-
