@@ -99,12 +99,12 @@ class Airlines extends Component {
                 {flights.length ? (
                     <Redirect to="/flights" />
                 ) : (
-                    <Redirect to="/no-flights" />
+                    <Redirect to="/flights/:search/:no-flights" />
                 )}
                 <Route path="/flights">
                     <FlightsList flightsList={flights} />
                 </Route>
-                <Route path="/no-flights">
+                <Route path="/flights/:search/:no-flights">
                     <NoFlights />
                 </Route>
             </Router>
