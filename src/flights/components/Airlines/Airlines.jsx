@@ -18,16 +18,12 @@ class Airlines extends Component {
         listSelected: null
     };
 
-    componentDidMount() {
-        this.props.getFlightsList(flt.DEPARTURES, TODAY_DATE);
-    }
-
     replaceSearchType = searchType =>
         searchType === flt.DEPARTURE_CITY_NAME
             ? flt.ARRIVAL_CITY_NAME
             : searchType;
 
-    checkFlightStatus = () => {
+    checkFlightStatus = (searchType, searchText, flightDate) => {
         const { listSelected } = this.state;
         const flightStatus =
             listSelected === flt.DEPARTURES
@@ -35,6 +31,22 @@ class Airlines extends Component {
                 : listSelected === flt.ARRIVALS
                 ? flt.ARRIVALS
                 : flt.DEPARTURES;
+
+        switch (flightStatus) {
+            case flt.DEPARTURES:
+                this.props.getTodayDepartures(
+                    searchType,
+                    searchText,
+                    flightDate
+                );
+            case flt.ARRIVALS:
+                const replacedSearchType = this.replaceSearchType(searchType);
+                this.props.getTodayArrivals(
+                    replacedSearchType,
+                    searchText,
+                    flightDate
+                );
+        }
 
         return flightStatus;
     };
@@ -48,23 +60,11 @@ class Airlines extends Component {
                 ? moment(searchText, 'DD-MM-YYYY').format('DD-MM-YYYY')
                 : null;
 
-        const flightStatus = this.checkFlightStatus();
-
-        if (flightStatus === flt.DEPARTURES) {
-            this.props.getTodayDepartures(
-                searchType,
-                upperCaseSearch,
-                flightDate
-            );
-        } else {
-            const replacedSearchType = this.replaceSearchType(searchType);
-            this.props.getTodayArrivals(
-                replacedSearchType,
-                upperCaseSearch,
-                flightDate
-            );
-        }
-
+        const flightStatus = this.checkFlightStatus(
+            searchType,
+            upperCaseSearch,
+            flightDate
+        );
         this.setState({ listSelected: flightStatus });
     };
 
@@ -95,12 +95,14 @@ class Airlines extends Component {
                         listSelected={listSelected}
                     />
                 </Route>
+
+                {flights.length ? (
+                    <Redirect to="/flights" />
+                ) : (
+                    <Redirect to="/no-flights" />
+                )}
                 <Route path="/flights">
-                    {flights.length ? (
-                        <FlightsList flightsList={flights} />
-                    ) : (
-                        <Redirect to="/no-flights" />
-                    )}
+                    <FlightsList flightsList={flights} />
                 </Route>
                 <Route path="/no-flights">
                     <NoFlights />
