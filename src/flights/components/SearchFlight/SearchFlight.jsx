@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import './searchFlight.scss';
 import isValidFormat from '../../utils/validators';
 import { Link } from 'react-router-dom';
+import flt from '../../utils/constants';
+import moment from 'moment';
 
 class SearchFlight extends Component {
     state = {
@@ -27,7 +29,14 @@ class SearchFlight extends Component {
 
     checkValidity = (validSearchType, searchText) => {
         if (validSearchType) {
-            this.props.searchFlights(validSearchType, searchText);
+            const updatedSearchText =
+                validSearchType === flt.FLIGHT_DATE
+                    ? moment(searchText, 'DD-MM-YYYY').format(
+                          'YYYY-MM-DDThh:mm:ss[Z]'
+                      )
+                    : searchText;
+
+            this.props.searchFlights(validSearchType, updatedSearchText);
             this.clearForm();
         } else {
             this.showErrMessage();

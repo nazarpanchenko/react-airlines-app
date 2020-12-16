@@ -104,7 +104,7 @@ class Airlines extends Component {
                 <Route path="/flights">
                     <FlightsList flightsList={flights} />
                 </Route>
-                <Route path="/flights/:search/:no-flights">
+                <Route path="/flights/:no-flights">
                     <NoFlights />
                 </Route>
             </Router>
